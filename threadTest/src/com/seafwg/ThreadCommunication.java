@@ -1,4 +1,5 @@
-package com.seafwg;/*
+package com.seafwg;
+/*
  * @create author: seafwg
  * @create time: 2020/7/16
  * @discrable: 线程之间的通信：
