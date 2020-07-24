@@ -1,5 +1,7 @@
 package com.seafwg.dataTime;
 
+import org.junit.Test;
+
 import java.util.Date;
 
 /*
@@ -39,5 +41,8 @@ public class DateTimeTest {
 
   }
 
+  @Test
+  private void test() {
 
+  }
 }
