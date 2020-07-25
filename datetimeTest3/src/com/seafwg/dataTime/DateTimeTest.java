@@ -4,12 +4,13 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /*
  * @create author: seafwg
  * @create time: 2020/7/23
- * @describe: Date对象是在Sytem类下。
+ * @describe: JDK8之前的日期对象：
  * 一. System类中的currentTimeMillis();返回当前时间与1970，1.1.0时0分0秒之间以毫秒为单位的时间差。时间戳。
  *
  * 二. java.util.Date类：
@@ -25,9 +26,18 @@ import java.util.Date;
  * 3.java.sql.Date:对应着数据库中的日期对象；
  *    > 如何实例化：new java.sql.Date(毫秒数L);
  * 三. SimpleDateFormat:对日期Date类的格式和解析：
- *
+ *    格式化：原始日期对象格式化成指定格式
+ *    解析：指定格式转化成原始日期格式
  * 四. Calender:
- *
+ *  > 1.实例化：
+ *    > 1.1: 创建其子类的(GregorianCalender)对象
+ *    > 1.2: 调用静态方法getInstance();
+ *  > 2.常用方法：
+ *    >get():获取当前日历对象：
+ *    >set():设置当前日历对象
+ *    >add():添加当前日历对象
+ *    >getTime():日历类转换为Date对象
+ *    >setTime():Date对象转换为日历对象
  */
 public class DateTimeTest {
 
@@ -73,6 +83,29 @@ public class DateTimeTest {
      *  总天数%5 == 1，2，3：打鱼：4，0是晒网；
      * 方法一：（data1.getTime() - data2.getTime()） /  (1000 * 60 * 60 * 24) +1:加一是由于java中的整数除法都是向下取整
      */
+
+
+    // Calender:
+    // get();获取当前日历对象的信息
+    Calendar calendar = Calendar.getInstance();
+    int days = calendar.get(Calendar.DAY_OF_MONTH);
+    System.out.println(days);
+    // 设置当前日历类的当前信息：
+    calendar.set(Calendar.DAY_OF_MONTH, 22); // Calender对象是可变的,不用重新赋值给一个变量
+    days = calendar.get(Calendar.DAY_OF_MONTH);
+    System.out.println(days);
+    // add(),对日历对象的加减操作：
+    calendar.add(Calendar.DAY_OF_MONTH, 3); // 可以是负数：
+    days = calendar.get(Calendar.DAY_OF_MONTH);
+    System.out.println(days);
+    // getTime():日历对象 --> Date对象：
+    Date calendarTime = calendar.getTime();
+    System.out.println(calendarTime);
+    // setTime():Date对象 --> 日历对象：
+    Date date5 = new Date();
+    calendar.setTime(date5);
+    days = calendar.get(Calendar.DAY_OF_MONTH);
+    System.out.println(days);
   }
 
 }
