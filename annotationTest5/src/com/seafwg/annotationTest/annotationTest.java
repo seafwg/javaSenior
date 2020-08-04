@@ -35,6 +35,14 @@ package com.seafwg.annotationTest;
  *    ElementType.TYPE_USE：表示该注解能写在适用类型的任何语句中
  */
 public class annotationTest {
+  public static void main(String[] args) {
+    boolean x = true;
+    boolean y = false;
+    short z = 42;
+    if((z++==42) && (y=true)) z++;
+    if((x=false) || (++z==45)) z++;
+    System.out.println("z=" + z);
+  }
 }
 
 //jdk1.8以前的写法：
@@ -49,3 +57,5 @@ class Person{
 class Student{
 
 }
+
+//515
