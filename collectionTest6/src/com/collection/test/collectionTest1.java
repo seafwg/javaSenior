@@ -18,7 +18,7 @@ import java.util.Iterator;
  *    |--HashSet：
  *    |--LinkedHashSet
  *    |--TreeSet
- *  |--Map：Map用于保存具有映射关系的数据，Map里保存着两组数据：key和value，它们都可以使任何引用类型的数据，但key不能重复。所以通过指定的key就可以取出对应的value。
+ * Map：Map用于保存具有映射关系的数据，Map里保存着两组数据：key和value，它们都可以使任何引用类型的数据，但key不能重复。所以通过指定的key就可以取出对应的value。
  *    |--HashMap
  *    |--LinkedHashMap
  *    |--TreeMap
@@ -27,7 +27,7 @@ import java.util.Iterator;
  *
  *
  *
- *    collection:通用方法：
+ *  collection:通用方法：
  *  1.add(Object obj):添加任意对象
  *  2.addAll(Collection coll):将指定的集合添加到集合中
  *
@@ -58,11 +58,20 @@ public class collectionTest1 {
     arrayList.add(123);
     arrayList.add("assassion");
     arrayList.add(890);
+//    增强for循环：
+    for (Object obj : arrayList) {
+      System.out.println("for(:)"+obj);
+    }
 
     Iterator iterator = arrayList.iterator();
     while (iterator.hasNext()) {
       Object it = iterator.next();
-      System.out.println(it);
+      System.out.println("iterator:"+it);
+    }
+//    iterator 迭代器的使用
+    Iterator it = arrayList.iterator();
+    while(it.hasNext()) {
+      System.out.println(it.next());
     }
 
 //    System.out.println(arrayList);
