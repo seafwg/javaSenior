@@ -122,8 +122,8 @@ drop table if exists tab_category;
      cname 旅游线路分类名称非空，唯一，字符串 100
 */
 CREATE TABLE tab_category(
-     cid INT PRIMARY KEY, -- 主键非空且唯一
-     cname VARCHAR(100) NOT NULL UNIQUE
+                             cid INT PRIMARY KEY, -- 主键非空且唯一
+                             cname VARCHAR(100) NOT NULL UNIQUE
 );
 
 /*
@@ -135,12 +135,12 @@ CREATE TABLE tab_category(
     cid 外键，所属分类
 */
 CREATE TABLE tab_route(
-  rid INT PRIMARY KEY AUTO_INCREMENT,
-  rname VARCHAR(100) NOT NULL UNIQUE,
-  price INT,
-  rdate date,
-  cid INT,
-  FOREIGN KEY (cid) REFERENCES tab_category(cid) -- 外键定义：列字段定义，列定义尾部添加约束：foreign key (字段) references 其他表(字段)
+                          rid INT PRIMARY KEY AUTO_INCREMENT,
+                          rname VARCHAR(100) NOT NULL UNIQUE,
+                          price INT,
+                          rdate date,
+                          cid INT,
+                          FOREIGN KEY (cid) REFERENCES tab_category(cid) -- 外键定义：列字段定义，列定义尾部添加约束：foreign key (字段) references 其他表(字段)
 );
 
 /*
@@ -155,14 +155,14 @@ CREATE TABLE tab_route(
     email 邮箱，字符串长度 100
 */
 CREATE TABLE tab_user(
-     uid INT PRIMARY KEY AUTO_INCREMENT,
-     username VARCHAR(100) NOT NULL UNIQUE,
-     password VARCHAR(30) NOT NULL,
-     name VARCHAR(100),
-     birthday DATETIME,
-     sex VARCHAR(2),
-     telephone VARCHAR(11),
-     email VARCHAR(100)
+                         uid INT PRIMARY KEY AUTO_INCREMENT,
+                         username VARCHAR(100) NOT NULL UNIQUE,
+                         password VARCHAR(30) NOT NULL,
+                         name VARCHAR(100),
+                         birthday DATETIME,
+                         sex VARCHAR(2),
+                         telephone VARCHAR(11),
+                         email VARCHAR(100)
 );
 
 /*
@@ -174,10 +174,145 @@ CREATE TABLE tab_user(
     rid 和 uid 不能重复，设置复合[联合]主键，同一个用户不能收藏同一个线路两次
 */
 CREATE TABLE tab_favorite(
-     rid INT,
-     uid INT,
-     date DATETIME,
-     PRIMARY KEY (rid,uid),-- 创建联合主键
-     FOREIGN KEY (rid) REFERENCES tab_route(rid),
-     FOREIGN KEY (uid) REFERENCES tab_user(uid)
+                             rid INT,
+                             uid INT,
+                             date DATETIME,
+                             PRIMARY KEY (rid,uid),-- 创建联合主键
+                             FOREIGN KEY (rid) REFERENCES tab_route(rid),
+                             FOREIGN KEY (uid) REFERENCES tab_user(uid)
 );
+
+/*
+-- 创建部门dept和员工表emp：
+  dept:包含id-主键,name-非空，唯一
+*/
+-- 创建dept：
+CREATE TABLE IF NOT EXISTS dept(
+                                   id INT PRIMARY KEY AUTO_INCREMENT,
+                                   name VARCHAR(20) NOT NULL UNIQUE
+);
+# INSERT INTO dept (NAME) VALUES ('开发部'),('市场部'),('财务部');
+INSERT INTO dept (id,name) VALUES (1,'英雄派'),(2,'小人派'),(3,'大师派');
+# INSERT INTO dept (name) VALUES ('英雄派'),('小人派'),('大师派');
+show create table dept;
+select * from dept;
+
+# 创建员工表
+/*
+id,name,gender,salary,join_date,dept_id
+*/
+CREATE TABLE emp(
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(30),
+                    gender VARCHAR(2),
+                    salary INT,
+                    join_date DATE,
+                    dept_id INT,
+                    FOREIGN KEY (dept_id) REFERENCES dept (id) -- 员工的外键id
+);
+select * from emp;
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('郭靖','男',8000,'2010-10-1',1);
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('杨过','男',9000,'2030-10-1',1);
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('赵志敬','男',6000,'2030-10-1',2);
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('小龙女','女',80000,'2030-10-1',3);
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('黄蓉','女',80000,'2020-10-1',1);
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('洪七公','男',0,'2010-10-1',3);
+INSERT INTO emp (name,gender,salary,join_date,dept_id) VALUES ('欧阳锋','男',18000,'2010-10-1',2);
+
+/**
+  多表查询练习：
+ */
+-- 笛卡尔积：select * from dept,emp;把两个表的数据以乘积的形式组合查出来，需要条件消除无用的数据
+SELECT * FROM dept,emp;
+
+-- demo:查询所有员工信息和对应部门的信息：
+-- 解决笛卡尔积的造成无用的数据：
+-- 1.内连接查询：
+--  1.1 隐式内连接：增加条件判断where
+SELECT * FROM dept,emp WHERE dept.id = emp.dept_id;
+SELECT
+    t2.id ID, -- 标准写法，写注释，字段的注释：
+    t2.name '姓名',
+    t2.gender '性别',
+    t2.salary '薪资',
+    t1.id '派别'
+FROM
+    dept t1,
+    emp t2
+WHERE       -- where隐式内联接：
+            t1.id = t2.dept_id;
+-- 1.2 显式内联接：关键字：[inner] join on
+-- 语法：select 字段列 from 表名1 [inner] join 表名2 on 条件;
+-- 表名1 join 表名2 on xxx;
+SELECT
+    t1.id '派别',
+    t2.id 'ID',
+    t2.name '姓名',
+    t2.gender '性别',
+    t2.salary '薪资'
+FROM
+    dept t1
+        JOIN
+    emp t2
+    ON
+            t1.id = t2.dept_id;
+
+-- 2.外连接查询：
+-- 2.1 左外连接：关键字：left join on
+-- 格式：select 字段列 from 表名1 left [outer]join 表名2 on 条件;
+-- 缩写：t1 left join t2 on xxx;
+SELECT
+    t1.id 派系,
+    t2.id 员工ID,
+    t2.name 员工姓名,
+    t2.gender 员工性别,
+    t2.salary 员工薪资,
+    t2.join_date 员工加入时间
+FROM
+    dept t1
+        RIGHT JOIN
+    emp t2
+    ON t1.id = t2.id;
+-- 总结：查询的是左表所有数据以及其交集部分。交集：
+-- 左外连接和右外连接的不同：
+-- 左外连接主键不可以相同，上述中派系有相同不可以，只查出三条数据。
+-- 右外连接主键也是不可以相同但是可以显示，主键相同的呈现NULL
+
+
+-- 3.子查询：查询中嵌套查询：
+-- demo:
+-- 1 查询工资最高的员工信息
+-- ①查询最高的工资是多少
+SELECT MAX(salary) FROM emp;
+-- ②根据这个条件查询他的信息：
+SELECT * FROM emp WHERE salary = 80000;
+-- ③使用一条sql数据查询：把第一条查询的结果作为第二条查询的条件
+SELECT * FROM emp WHERE emp.salary = (SELECT MAX(salary) FROM emp);
+
+-- 2 查询'英雄派'和'大师派'所有的员工信息
+# SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE NAME = '财务部' OR NAME = '市场部');
+SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE name = '英雄派' OR name = '大师派');
+SELECT * FROM emp WHERE dept_id IN (SELECT id FROM dept WHERE name IN ('英雄派','大师派'));
+
+-- 3 查询员工入职日期是2010-10-01日之后的员工信息和部门信息
+select * from emp;
+-- 普通查询：
+SELECT * FROM emp t1,dept t2 WHERE t1.dept_id = t2.id AND t1.join_date > '2010-10-01';
+-- 多表子查询：
+SELECT * FROM dept t1 ,(SELECT * FROM emp WHERE emp.`join_date` > '2010-10-01') t2 WHERE t1.id = t2.dept_id;
+-- 子查询的结果是多行多列，查询出来后作为一张虚拟的表，再次的参与查询
+SELECT
+    *
+FROM
+    dept t1,
+    (SELECT * FROM emp t3 WHERE t3.join_date > '2010-10-01') t2 -- 作为一张虚拟的表再次查询
+WHERE
+        t1.id = t2.dept_id;
+/** 总结：子查询的结果分类：
+  ①子查询结果为单行单列：eg:1.查询工资最高的员工信息。子查询[工资最高]可以作为条件，使用运算符去判断。 运算符： > >= < <= =
+  ②子查询结构为多行单列：eg:2.查询'英雄派'和'大师派'所有的员工信息。子查询['英雄派'和'大师派']可以作为条件，使用运算符in来判断
+  ③子查询结果为多行多列：eg:3.查询员工入职日期是2010-10-01日之后的员工信息和部门信息。
+                          子查询[员工入职日期是2010-10-01日之后]可以作为一张虚拟表参与查询
+ */
+
+
