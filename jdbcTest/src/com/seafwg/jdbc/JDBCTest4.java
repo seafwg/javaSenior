@@ -7,7 +7,7 @@ import java.sql.*;
  * @create time: 2020
  * @describe: JDBC TEST4
  * TODO
- * 查询出emp中所有的人员信息，并封装成一个集合：
+ * 查询出emp中所有的人员信息：
  **/
 public class JDBCTest4 {
     public static void main(String[] args) {
@@ -36,7 +36,7 @@ public class JDBCTest4 {
                 Date join_date = rst.getDate("join_date");
                 int dept_id = rst.getInt("dept_id");
 
-                System.out.println(id+"----"+name+"----"+gender+"----"+salary+"----"+join_date+"----"+dept_id);
+                System.out.println("{"+"id:"+id+",name:"+name+",gender:"+gender+",salary:"+salary+",join_date:"+join_date+",dept_id:"+dept_id+"}");
             }
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
